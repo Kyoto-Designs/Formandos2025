@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formandos 2025 - E.E.B.M. Maurina de Souza Patrício</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Carrega Font Awesome para ícones (Pré-feito) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Configuração do Tailwind para usar o backdrop-blur -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'fundo-escuro': '#0f172a',
+                        'dourado': '#facc15',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Carrega as fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS GERAIS E ANIMAÇÕES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; 
+            color: #f1f5f9; 
+            overflow-x: hidden;
+            scroll-behavior: smooth; 
+        }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Animação de entrada fluida (Slide In Up) */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideInUp {
+            animation: slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Animação de pulsação para o ícone de rolagem */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(-15%); }
+            50% { transform: translateY(0); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 2s infinite;
+        }
+
+        /* Animação de Brilho Sutil no Fundo para Fluidez */
+        @keyframes subtleGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.2; }
+            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.35; }
+        }
+        .bg-glow-element {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50vw;
+            height: 50vw;
+            min-width: 300px;
+            min-height: 300px;
+            background: radial-gradient(circle, rgba(250, 202, 21, 0.3) 0%, rgba(15, 23, 42, 0) 70%);
+            border-radius: 50%;
+            animation: subtleGlow 15s infinite ease-in-out;
+            z-index: 0;
+        }
+
+
+        /* --- ESTILO DOS CARTÕES (ANIMAÇÃO DE CLIQUE E FLUIDEZ) --- */
+        .formando-card {
+            background-color: #1e293b; 
+            border: 2px solid #334155;
+            /* Transição suave para hover e clique (crescimento gradual) */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            opacity: 0; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Efeito de Levitar no Hover */
+        .formando-card:hover {
+            transform: scale(1.03) translateY(-3px) !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); 
+            border-color: #facc15;
+            z-index: 10;
+        }
+
+        /* Efeito de Pressionar/Clicar (Mais Lento e Gradual, como pedido) */
+        .formando-card:active {
+            /* Diminui um pouco (efeito de clique/cresce gradual quando para) */
+            transform: scale(0.98) translateY(1px) !important; 
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            /* Transição lenta para o efeito gradual */
+            transition: all 0.2s ease-out; 
+        }
+
+        /* DESTAQUE ESPECIAL (REGENTE E PADRINHOS) */
+        @keyframes goldGlow {
+            0%, 100% { box-shadow: 0 0 15px 5px rgba(250, 202, 21, 0.4), 0 0 5px 1px rgba(250, 202, 21, 0.6); }
+            50% { box-shadow: 0 0 20px 7px rgba(250, 202, 21, 0.7), 0 0 8px 2px rgba(250, 202, 21, 0.8); }
+        }
+        .card-special {
+            width: 100%; 
+            max-width: 320px;
+            background-color: #334155; 
+            border: 3px solid #facc15; 
+            animation: goldGlow 3s infinite alternate ease-in-out, slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.8s !important;
+            z-index: 20;
+        }
+        .card-special:hover {
+            transform: scale(1.05) translateY(-5px) !important;
+            box-shadow: 0 0 30px 10px rgba(250, 202, 21, 0.8);
+            border-color: #fff;
+        }
+        .role-text {
+            font-size: 0.9rem;
+            color: #94a3b8; 
+            margin-top: 0.25rem;
+        }
+        .card-special .role-text {
+            color: #fef08a; 
+            font-weight: 600;
+        }
+
+        /* ESTILOS DO MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px); 
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        .modal-content {
+            background-color: #1e293b; 
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            transition: transform 0.3s ease-out;
+            border: 2px solid #facc15;
+            text-align: center;
+        }
+        .modal-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-overlay.open .modal-content {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Barra de Navegação Fixa e Opaca com Blur -->
+    <nav class="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 backdrop-blur-md bg-slate-900/50 border-b border-amber-400/20 shadow-xl">
+        <div class="flex justify-between items-center max-w-7xl mx-auto">
+            <div class="text-3xl font-display font-bold text-white tracking-wider">
+                Formandos <span class="text-amber-400">2025</span>
+            </div>
+            <!-- Botão de rolagem suave -->
+            <a href="#formandos-section" class="text-amber-400 hover:text-white transition duration-300 font-semibold" onclick="scrollToSection(event, 'formandos-section')">
+                A Turma
+            </a>
+        </div>
+    </nav>
+
+
+    <!-- Seção Hero -->
+    <header class="min-h-screen w-full flex flex-col justify-center items-center text-center p-8 relative overflow-hidden bg-fundo-escuro pt-24">
+        
+        <!-- Elemento para o Brilho Sutil de Fundo -->
+        <div class="bg-glow-element"></div>
+
+        <div class="z-10 flex flex-col items-center">
+            
+            <!-- ÍCONE: Capelo/Graduação (Substituído por um Font Awesome mais seguro) -->
+            <i class="fas fa-graduation-cap text-6xl text-amber-400 mb-4 animate-slideInUp" style="animation-delay: 0.1s;"></i>
+
+            <h2 class="text-xl md:text-2xl text-amber-400 font-medium animate-slideInUp" style="animation-delay: 0.2s;">Celebração de uma Jornada</h2>
+            <h1 class="font-display text-5xl sm:text-7xl md:text-8xl font-bold my-4 text-white animate-slideInUp" style="animation-delay: 0.4s; text-shadow: 0 0 20px rgba(255,255,255,0.2);">Formatura 9º Ano</h1>
+            <p class="text-lg md:text-2xl text-slate-300 animate-slideInUp" style="animation-delay: 0.6s;">E.E.B.M. Maurina de Souza Patrício</p>
+            
+            <a href="#formandos-section" id="scroll-btn" class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 cursor-pointer text-amber-400 animate-bounce-slow" style="animation-delay: 1.0s;" onclick="scrollToSection(event, 'formandos-section')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main id="content" class="w-full bg-slate-800 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto p-6 md:p-12">
+
+            <!-- Seção Formandos -->
+            <section id="formandos-section" class="my-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-white text-center mb-16 animate-slideInUp">Nossos Formandos e Líderes</h2>
+                
+                <!-- Container da Turma (Formandos e Líderes) -->
+                <div class="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8" id="turma-container">
+                    <!-- O JS vai popular os cartões aqui -->
+                </div>
+
+                <!-- Seção de Destaque (Regente e Padrinhos) -->
+                <div class="mt-20">
+                    <h3 class="font-display text-3xl md:text-4xl font-bold text-white text-center mb-10 animate-slideInUp" style="animation-delay: 0.6s;">Homenageados de Honra</h3>
+                    <div class="flex flex-wrap justify-center gap-8 md:gap-12" id="homenageados-container">
+                        <!-- O JS vai popular os cartões especiais aqui -->
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center p-10 bg-slate-900 border-t border-slate-700">
+        <p class="text-slate-400">&copy; 2025 | Formatura do Nono Ano</p>
+        <p class="text-slate-300 font-medium mt-4">E.E.B.M. Maurina de Souza Patrício</p>
+        
+        <!-- Botão para abrir o Modal de Contato -->
+        <button id="open-modal-btn" class="mt-6 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-slate-900 bg-amber-400 hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 transform hover:scale-105 active:scale-95">
+            <i class="fas fa-phone mr-2"></i>
+            Fale Conosco
+        </button>
+    </footer>
+
+    <!-- Modal de Contato -->
+    <div id="contact-modal" class="modal-overlay">
+        <div class="modal-content">
+            <!-- Botão de Fechar -->
+            <button id="close-modal-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition duration-200">
+                <i class="fas fa-times h-6 w-6"></i>
+            </button>
+            
+            <h4 class="text-3xl font-display font-bold text-amber-400 mb-4">Contato</h4>
+            
+            <p class="text-xl text-slate-200 mb-3">Para mais informações mande um zap para:</p>
+            
+            <a href="https://wa.me/5548999050366" target="_blank" class="inline-flex items-center text-3xl font-bold text-white bg-green-600 px-4 py-2 rounded-lg hover:bg-green-500 transition duration-300">
+                <i class="fab fa-whatsapp text-3xl mr-3"></i>
+                (48) 99905-0366
+            </a>
+            <p class="text-sm text-slate-400 mt-4">Clique no número para iniciar uma conversa no WhatsApp.</p>
+        </div>
+    </div>
+
+
+    <script>
+        // Dados completos com todas as funções
+        const formandosData = [
+            // Destaques (Homenageados)
+            { nome: 'Professor Marcel', role: 'Professor Regente (Ciências)', category: 'special' },
+            { nome: 'Vice-Diretora Bruna', role: 'Padrinho de Honra', category: 'special' },
+            { nome: 'Secretário Leonardo', role: 'Padrinho de Honra', category: 'special' },
+            
+            // Turma e Líderes
+            { nome: 'Keyla', role: 'Líder de Classe', category: 'lider' },
+            { nome: 'Herickson', role: 'Líder de Classe', category: 'lider' },
+            { nome: 'Ana Cláudia', role: 'Formando', category: 'turma' },
+            { nome: 'Maurício', role: 'Formando', category: 'turma' },
+            { nome: 'Nicole', role: 'Formando', category: 'turma' },
+            { nome: 'Naeli', role: 'Formando', category: 'turma' },
+            { nome: 'Murilo', role: 'Formando', category: 'turma' },
+            { nome: 'Stayella', role: 'Formando', category: 'turma' },
+            { nome: 'Felipe', role: 'Formando', category: 'turma' },
+            { nome: 'Alice', role: 'Formando', category: 'turma' },
+            { nome: 'Daniel', role: 'Formando', category: 'turma' },
+            { nome: 'Victor', role: 'Formando', category: 'turma' },
+            { nome: 'Isabelly', role: 'Formando', category: 'turma' },
+        ];
+        
+        const turmaContainer = document.getElementById('turma-container');
+        const homenageadosContainer = document.getElementById('homenageados-container');
+
+        // Ícone de Estrela para Líderes (Font Awesome)
+        const starIcon = `<i class="fas fa-star text-base text-amber-400 mb-1"></i>`;
+        
+        // Separa os dados e renderiza
+        formandosData.forEach((data, index) => {
+            const card = document.createElement('div');
+            
+            let baseClasses = 'formando-card flex flex-col items-center p-5 rounded-xl font-semibold tracking-wide text-center';
+            let containerElement = turmaContainer;
+            let delayOffset = 0.4; 
+
+            if (data.category === 'special') {
+                card.className = `${baseClasses} card-special`;
+                containerElement = homenageadosContainer;
+                delayOffset = 0.8;
+            } else {
+                card.className = `${baseClasses} w-full sm:w-44 md:w-52 lg:w-48`;
+            }
+
+            // Rotação aleatória sutil
+            const rotations = ['rotate-1', '-rotate-1', 'rotate-2', '-rotate-2', 'rotate-0'];
+            const randomRotation = rotations[Math.floor(Math.random() * rotations.length)];
+            card.classList.add(randomRotation);
+
+            // Conteúdo do cartão
+            let icon = '';
+            let roleHtml = `<span class="role-text">${data.role}</span>`;
+
+            if (data.category === 'lider') {
+                icon = starIcon;
+            }
+
+            card.innerHTML = `
+                ${icon}
+                <span class="text-2xl text-white mt-1">${data.nome}</span>
+                ${roleHtml}
+            `;
+
+            // Aplica o delay da animação de entrada
+            card.style.animation = `slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`;
+            card.style.animationDelay = `${delayOffset + index * 0.08}s`;
+            
+            containerElement.appendChild(card);
+        });
+
+        // --- FUNÇÕES DE INTERATIVIDADE ---
+        
+        // 1. Rolagem Suave Personalizada
+        function scrollToSection(event, id) {
+            event.preventDefault();
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        document.getElementById('scroll-btn').addEventListener('click', (e) => {
+            scrollToSection(e, 'formandos-section');
+        });
+
+        // 2. Funcionalidade do Modal
+        const modal = document.getElementById('contact-modal');
+        const openBtn = document.getElementById('open-modal-btn');
+        const closeBtn = document.getElementById('close-modal-btn');
+
+        function openModal() {
+            modal.classList.add('open');
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+        }
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            // Fecha se clicar fora do modal-content
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Fechar com a tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('open')) {
+                closeModal();
+            }
+        });
+
+    </script>
+
+</body>
+              </html>
