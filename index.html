@@ -85,7 +85,6 @@
         .formando-card {
             background-color: #1e293b; 
             border: 2px solid #334155;
-            /* Transição suave para hover e clique (crescimento gradual) */
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             opacity: 0; 
@@ -179,6 +178,22 @@
         /* Estilo especial para o Modal do Easter Egg */
         .modal-easter-egg .modal-content {
             border-color: #ec4899; /* Rosa vibrante para destaque */
+        }
+
+        /* Estilo para formatar os apelidos múltiplos */
+        .nickname-list {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #0f172a;
+        }
+        .nickname-list span {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fef08a;
+            margin-top: 5px;
+            line-height: 1.2;
         }
     </style>
 </head>
@@ -289,8 +304,10 @@
             </button>
             
             <p class="text-base text-pink-400 mb-2 font-medium">EASTER EGG DA TURMA!</p>
-            <h4 id="nickname-title" class="text-4xl font-display font-extrabold text-dourado-claro mb-2"></h4>
             <p id="nickname-person" class="text-xl text-slate-200 font-semibold mb-3 border-b border-pink-500/50 pb-2"></p>
+            <div id="nickname-title-container" class="nickname-list">
+                <!-- Apelidos serão inseridos aqui pelo JS -->
+            </div>
             
             <div class="mt-4 p-3 bg-pink-900/30 rounded-lg border-l-4 border-pink-500">
                 <p class="text-white italic">"A turma que quis assim!" 😂</p>
@@ -300,47 +317,48 @@
 
 
     <script>
-        // Mapeamento COMPLETO dos apelidos para o Easter Egg
-        // Os nomes são usados exatamente como na lista formandosData.
+        // Mapeamento COMPLETO dos apelidos para o Easter Egg.
+        // Apelidos múltiplos são separados por barra (/) e o JS irá formatá-los.
         const nicknames = {
             'Leandro': 'Importado',
             'Nicole': 'Peppa Ping',
             'Herickson': 'Bomba Relógio',
             'Alice': 'Divertidamente',
-            'Murilo': 'Rei do Gado', // Atualizado
-            'Naeli': 'Nojinho', // Naeli (nome original)
-            'Victor': 'Ping Lee / Boca', // Novo
-            'Daniel': 'Rock Pong / Aberto', // Novo
-            'Maurício': 'Choquinho / Pulga Atrás da Orelha', // Novo
-            'Isabelly': 'Raivinha', // Novo
-            'Felipe': 'Exatas', // Novo
-            'Ana Cláudia': 'Magalu / Cracuda', // Ana Cláudia (nome original)
-            'Keyla': 'Alvo de Borrachas', // Keyla (nome original)
-            'Stayella': 'Introvertida', // Novo
+            'Murilo': 'Rei do Gado', 
+            'Naeli': 'Nojinho', 
+            'Victor': 'Ping Lee / Boca', 
+            'Daniel': 'Rock Pong / Aberto', 
+            'Maurício': 'Choquinho / Pulga Atrás da Orelha', 
+            'Isabelly': 'Raivinha', 
+            'Felipe': 'Exatas', 
+            'Ana Cláudia': 'Magalu / Cracuda', 
+            'Keyla': 'Alvo de Borrachas', 
+            'Stayella': 'Introvertida', 
         };
 
         // Dados completos da turma
+        // ORDEM: Leaders, and then Formandos (ordered alphabetically by name)
         const formandosData = [
-            // Destaques (Homenageados)
+            // Destaques (Homenageados) - Ficam separados no HTML
             { nome: 'Professor Marcel', role: 'Professor Regente (Ciências)', category: 'special' },
             { nome: 'Vice-Diretora Bruna', role: 'Padrinho de Honra', category: 'special' },
             { nome: 'Secretário Leonardo', role: 'Padrinho de Honra', category: 'special' },
             
-            // Turma e Líderes
+            // Turma - ORDEM ALFABÉTICA
             { nome: 'Keyla', role: 'Líder de Classe', category: 'lider' },
             { nome: 'Herickson', role: 'Líder de Classe', category: 'lider' },
-            { nome: 'Leandro', role: 'Formando', category: 'turma' }, 
-            { nome: 'Ana Cláudia', role: 'Formando', category: 'turma' },
-            { nome: 'Maurício', role: 'Formando', category: 'turma' },
-            { nome: 'Nicole', role: 'Formando', category: 'turma' },
-            { nome: 'Naeli', role: 'Formando', category: 'turma' }, 
-            { nome: 'Murilo', role: 'Formando', category: 'turma' },
-            { nome: 'Stayella', role: 'Formando', category: 'turma' },
-            { nome: 'Felipe', role: 'Formando', category: 'turma' },
             { nome: 'Alice', role: 'Formando', category: 'turma' },
+            { nome: 'Ana Cláudia', role: 'Formando', category: 'turma' },
             { nome: 'Daniel', role: 'Formando', category: 'turma' },
-            { nome: 'Victor', role: 'Formando', category: 'turma' },
+            { nome: 'Felipe', role: 'Formando', category: 'turma' },
             { nome: 'Isabelly', role: 'Formando', category: 'turma' },
+            { nome: 'Leandro', role: 'Formando', category: 'turma' }, 
+            { nome: 'Maurício', role: 'Formando', category: 'turma' },
+            { nome: 'Murilo', role: 'Formando', category: 'turma' },
+            { nome: 'Naeli', role: 'Formando', category: 'turma' }, 
+            { nome: 'Nicole', role: 'Formando', category: 'turma' },
+            { nome: 'Stayella', role: 'Formando', category: 'turma' },
+            { nome: 'Victor', role: 'Formando', category: 'turma' },
         ];
         
         const turmaContainer = document.getElementById('turma-container');
@@ -407,7 +425,7 @@
             
             let baseClasses = 'formando-card flex flex-col items-center p-5 rounded-xl font-semibold tracking-wide text-center';
             let containerElement = turmaContainer;
-            let delayOffset = 0.4; 
+            let delayOffset = 0.4; // Começa mais rápido
 
             if (data.category === 'special') {
                 card.className = `${baseClasses} card-special`;
@@ -438,29 +456,13 @@
 
             // Aplica o delay da animação de entrada
             card.style.animation = `slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`;
-            card.style.animationDelay = `${delayOffset + index * 0.08}s`;
+            // Reduzindo a diferença de delay entre os cartões para um efeito mais rápido
+            card.style.animationDelay = `${delayOffset + index * 0.05}s`;
             
             containerElement.appendChild(card);
 
             // Adiciona o evento de Duplo Clique para o Easter Egg
             if (nicknames[data.nome]) {
                 card.addEventListener('dblclick', () => {
-                    const nicknameTitle = document.getElementById('nickname-title');
-                    const nicknamePerson = document.getElementById('nickname-person');
-                    
-                    // Preenche o modal
-                    nicknamePerson.textContent = data.nome;
-                    nicknameTitle.textContent = nicknames[data.nome];
-
-                    // Abre o modal de apelido
-                    openModal('nickname-modal');
-                });
-            }
-        });
-
-
-        // ----------------------------------------------------
-        // ROLAGEM SUAVE
-        // ----------------------------------------------------
-        
- 
+                    const nicknameTitleContainer = document.getElementById('nickname-title-container');
+                    const nicknamePerson = document.getElemen
