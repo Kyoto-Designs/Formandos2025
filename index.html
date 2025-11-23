@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formandos 2025 - E.E.B.M. Maurina de Souza Patrício</title>
-    <!-- Carrega o Tailwind CSS -->
+    
+    <!-- 1. Carrega o Tailwind CSS (Sem 'defer' para garantir que 'tailwind' seja definido imediatamente) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Carrega Font Awesome para ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <!-- Configuração do Tailwind para usar o backdrop-blur -->
+    <!-- 2. Configuração do Tailwind (Deve vir logo após o script CDN) -->
     <script>
         tailwind.config = {
             theme: {
@@ -25,6 +23,9 @@
         }
     </script>
     
+    <!-- Carrega Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <!-- Carrega as fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,7 +62,7 @@
             animation: bounce-slow 2s infinite;
         }
 
-        /* Animação de Brilho Sutil no Fundo para Fluidez */
+        /* Animação de Brilho Sutil de Fundo */
         @keyframes subtleGlow {
             0%, 100% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.2; }
             50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.35; }
@@ -81,16 +82,20 @@
         }
 
 
-        /* --- ESTILO DOS CARTÕES (ANIMAÇÃO DE CLIQUE E FLUIDEZ) --- */
+        /* --- ESTILO DOS CARTÕES --- */
         .formando-card {
             background-color: #1e293b; 
             border: 2px solid #334155;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            opacity: 0; 
+            opacity: 1; 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             position: relative; 
             z-index: 5; 
+            /* Permite o flex-col para a expansão */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Importante para a animação de expansão */
         }
         
         /* Efeito de Levitar no Hover */
@@ -101,7 +106,7 @@
             z-index: 10;
         }
 
-        /* Efeito de Pressionar/Clicar (Mais Lento e Gradual) */
+        /* Efeito de Pressionar/Clicar */
         .formando-card:active {
             transform: scale(0.98) translateY(1px) !important; 
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -114,18 +119,12 @@
             50% { box-shadow: 0 0 20px 7px rgba(250, 202, 21, 0.7), 0 0 8px 2px rgba(250, 202, 21, 0.8); }
         }
         .card-special {
-            width: 100%; 
             max-width: 320px;
             background-color: #334155; 
             border: 3px solid #facc15; 
             animation: goldGlow 3s infinite alternate ease-in-out, slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
             animation-delay: 0.8s !important;
             z-index: 20;
-        }
-        .card-special:hover {
-            transform: scale(1.05) translateY(-5px) !important;
-            box-shadow: 0 0 30px 10px rgba(250, 202, 21, 0.8);
-            border-color: #fff;
         }
         .role-text {
             font-size: 0.9rem;
@@ -137,63 +136,41 @@
             font-weight: 600;
         }
 
-        /* --- ESTILOS DO MODAL --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 100;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px); 
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-out;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #1e293b; 
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.3s ease-out;
-            border: 2px solid #facc15;
+        /* --- ESTILOS DE EXPANSÃO (ACORDEÃO) --- */
+        .nickname-section {
+            /* Ocupa 100% da largura, mas só aparece abaixo */
+            width: 100%;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
             text-align: center;
-        }
-        .modal-overlay.open {
-            display: flex;
-            opacity: 1;
-        }
-        .modal-overlay.open .modal-content {
-            transform: scale(1);
-        }
-        
-        /* Estilo especial para o Modal do Easter Egg */
-        .modal-easter-egg .modal-content {
-            border-color: #ec4899; /* Rosa vibrante para destaque */
+            
+            /* Altura 0 e display none para esconder */
+            max-height: 0; 
+            opacity: 0;
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out, padding 0.5s ease-out, border-width 0.5s ease-out;
+            padding-bottom: 0;
         }
 
-        /* Estilo para formatar os apelidos múltiplos */
-        .nickname-list {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 6px;
-            background-color: #0f172a;
+        .nickname-section.open {
+            /* Quando aberto, altura automática (ou um valor grande) e opacidade total */
+            max-height: 200px; /* Valor seguro para conter os apelidos */
+            opacity: 1;
+            padding-bottom: 15px;
         }
+        
         .nickname-list span {
             display: block;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 800;
-            color: #fef08a;
+            color: #ec4899; /* Cor Pink para destaque */
             margin-top: 5px;
             line-height: 1.2;
+        }
+        .nickname-info {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -230,7 +207,7 @@
         </div>
         
         <!-- Seta de Rolagem - Fixado e Centralizado na Raiz do Header -->
-        <a href="#formandos-section" id="scroll-btn" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 cursor-pointer text-amber-400 animate-bounce-slow" style="animation-delay: 1.0s;" onclick="scrollToSection(event, 'formandos-section')">
+        <a href="#formandos-section" id="scroll-btn" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 cursor-pointer text-amber-400 animate-bounce-slow" onclick="scrollToSection(event, 'formandos-section')">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
@@ -268,57 +245,16 @@
         <p class="text-slate-400">&copy; 2025 | Formatura do Nono Ano</p>
         <p class="text-slate-300 font-medium mt-4">E.E.B.M. Maurina de Souza Patrício</p>
         
-        <!-- Botão para abrir o Modal de Contato -->
-        <button id="open-contact-modal-btn" class="mt-6 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-slate-900 bg-amber-400 hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 transform hover:scale-105 active:scale-95">
-            <i class="fas fa-phone mr-2"></i>
-            Fale Conosco
-        </button>
+        <!-- Botão de Contato Simples -->
+        <a href="https://wa.me/5548999050366" target="_blank" class="mt-6 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-slate-900 bg-amber-400 hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition duration-300 transform hover:scale-105 active:scale-95">
+            <i class="fab fa-whatsapp mr-2"></i>
+            Fale Conosco (WhatsApp)
+        </a>
     </footer>
-
-    <!-- Modal de Contato (Informações padrão) -->
-    <div id="contact-modal" class="modal-overlay">
-        <div class="modal-content">
-            <!-- Botão de Fechar -->
-            <button class="close-modal-btn absolute top-3 right-3 text-slate-400 hover:text-white transition duration-200">
-                <i class="fas fa-times h-6 w-6"></i>
-            </button>
-            
-            <h4 class="text-3xl font-display font-bold text-amber-400 mb-4">Contato</h4>
-            
-            <p class="text-xl text-slate-200 mb-3">Para mais informações mande um zap para:</p>
-            
-            <a href="https://wa.me/5548999050366" target="_blank" class="inline-flex items-center text-3xl font-bold text-white bg-green-600 px-4 py-2 rounded-lg hover:bg-green-500 transition duration-300">
-                <i class="fab fa-whatsapp text-3xl mr-3"></i>
-                (48) 99905-0366
-            </a>
-            <p class="text-sm text-slate-400 mt-4">Clique no número para iniciar uma conversa no WhatsApp.</p>
-        </div>
-    </div>
-
-    <!-- Modal de Apelidos (Easter Egg) -->
-    <div id="nickname-modal" class="modal-overlay modal-easter-egg">
-        <div class="modal-content">
-            <!-- Botão de Fechar -->
-            <button class="close-modal-btn absolute top-3 right-3 text-slate-400 hover:text-white transition duration-200">
-                <i class="fas fa-times h-6 w-6"></i>
-            </button>
-            
-            <p class="text-base text-pink-400 mb-2 font-medium">EASTER EGG DA TURMA!</p>
-            <p id="nickname-person" class="text-xl text-slate-200 font-semibold mb-3 border-b border-pink-500/50 pb-2"></p>
-            <div id="nickname-title-container" class="nickname-list">
-                <!-- Apelidos serão inseridos aqui pelo JS -->
-            </div>
-            
-            <div class="mt-4 p-3 bg-pink-900/30 rounded-lg border-l-4 border-pink-500">
-                <p class="text-white italic">"A turma que quis assim!" 😂</p>
-            </div>
-        </div>
-    </div>
 
 
     <script>
         // Mapeamento COMPLETO dos apelidos para o Easter Egg.
-        // Apelidos múltiplos são separados por barra (/) e o JS irá formatá-los.
         const nicknames = {
             'Leandro': 'Importado',
             'Nicole': 'Peppa Ping',
@@ -337,9 +273,8 @@
         };
 
         // Dados completos da turma
-        // ORDEM: Leaders, and then Formandos (ordered alphabetically by name)
         const formandosData = [
-            // Destaques (Homenageados) - Ficam separados no HTML
+            // Destaques (Homenageados)
             { nome: 'Professor Marcel', role: 'Professor Regente (Ciências)', category: 'special' },
             { nome: 'Vice-Diretora Bruna', role: 'Padrinho de Honra', category: 'special' },
             { nome: 'Secretário Leonardo', role: 'Padrinho de Honra', category: 'special' },
@@ -361,6 +296,7 @@
             { nome: 'Victor', role: 'Formando', category: 'turma' },
         ];
         
+        // Pega os elementos CONTÊINERES
         const turmaContainer = document.getElementById('turma-container');
         const homenageadosContainer = document.getElementById('homenageados-container');
 
@@ -368,69 +304,45 @@
         const starIcon = `<i class="fas fa-star text-base text-amber-400 mb-1"></i>`;
 
         // ----------------------------------------------------
-        // FUNÇÕES GERAIS DO MODAL
+        // RENDERIZAÇÃO DOS CARTÕES E EXPANSÃO (EASTER EGG)
         // ----------------------------------------------------
-
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('open');
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('open');
-            }
-        }
         
-        // Configura o evento de fechar para ambos os modais (botão 'X' e clique fora)
-        document.querySelectorAll('.close-modal-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const modalId = e.target.closest('.modal-overlay').id;
-                closeModal(modalId);
-            });
-        });
+        // Função para alternar a expansão do apelido
+        function toggleNickname(cardElement, nome) {
+            const nicknameSection = cardElement.querySelector('.nickname-section');
+            
+            // Previne a ação se não houver apelido
+            if (!nicknameSection) return;
 
-        // Fechar ao clicar no overlay do modal (a área escura)
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    closeModal(overlay.id);
+            // Fecha todos os outros cards abertos na turma para que apenas um fique aberto por vez
+            document.querySelectorAll('.formando-card').forEach(c => {
+                if (c !== cardElement) {
+                    c.querySelector('.nickname-section')?.classList.remove('open');
+                    // Remove a classe de destaque no clique, se existir
+                    c.classList.remove('bg-pink-900/50');
                 }
             });
-        });
-        
-        document.getElementById('open-contact-modal-btn').addEventListener('click', () => openModal('contact-modal'));
-        
-        // Fechar com a tecla ESC para qualquer modal aberto
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.open').forEach(modal => {
-                    modal.classList.remove('open');
-                });
-            }
-        });
 
+            // Alterna a classe 'open' para o card clicado
+            nicknameSection.classList.toggle('open');
+            cardElement.classList.toggle('bg-pink-900/50', nicknameSection.classList.contains('open'));
+        }
 
-        // ----------------------------------------------------
-        // RENDERIZAÇÃO DOS CARTÕES E EVENTOS (EASTER EGG)
-        // ----------------------------------------------------
-        
         // Separa os dados e renderiza
         formandosData.forEach((data, index) => {
             const card = document.createElement('div');
-            card.dataset.nome = data.nome; // Guarda o nome para o Easter Egg
+            card.dataset.nome = data.nome; 
             
             let baseClasses = 'formando-card flex flex-col items-center p-5 rounded-xl font-semibold tracking-wide text-center';
             let containerElement = turmaContainer;
-            let delayOffset = 0.4; // Começa mais rápido
+            let delayOffset = 0.4; 
 
             if (data.category === 'special') {
                 card.className = `${baseClasses} card-special`;
                 containerElement = homenageadosContainer;
                 delayOffset = 0.8;
+                // Os cartões especiais (homenageados) não têm apelido/easter egg
+                card.style.cursor = 'default';
             } else {
                 card.className = `${baseClasses} w-full sm:w-44 md:w-52 lg:w-48`;
             }
@@ -440,29 +352,74 @@
             const randomRotation = rotations[Math.floor(Math.random() * rotations.length)];
             card.classList.add(randomRotation);
 
-            // Conteúdo do cartão
             let icon = '';
             let roleHtml = `<span class="role-text">${data.role}</span>`;
+            let nicknameHtml = '';
 
             if (data.category === 'lider') {
                 icon = starIcon;
             }
 
+            // Cria a seção de apelidos se o nome estiver no mapa
+            if (nicknames[data.nome]) {
+                const apelidos = nicknames[data.nome].split('/').map(s => s.trim()).filter(s => s.length > 0);
+                
+                // Formata a lista de apelidos
+                const apelidosListHtml = apelidos.map(a => `<span>${a}</span>`).join('');
+
+                nicknameHtml = `
+                    <div class="nickname-section">
+                        <p class="nickname-info text-pink-400 font-medium">EASTER EGG DA TURMA!</p>
+                        <div class="nickname-list">
+                            ${apelidosListHtml}
+                        </div>
+                        <p class="nickname-info italic mt-2">Clique duas vezes novamente para fechar.</p>
+                    </div>
+                `;
+            }
+
+            // Conteúdo principal do cartão
             card.innerHTML = `
                 ${icon}
                 <span class="text-2xl text-white mt-1">${data.nome}</span>
                 ${roleHtml}
+                ${nicknameHtml}
             `;
 
             // Aplica o delay da animação de entrada
             card.style.animation = `slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`;
-            // Reduzindo a diferença de delay entre os cartões para um efeito mais rápido
             card.style.animationDelay = `${delayOffset + index * 0.05}s`;
             
             containerElement.appendChild(card);
 
-            // Adiciona o evento de Duplo Clique para o Easter Egg
+            // Adiciona o evento de Duplo Clique para a Expansão
             if (nicknames[data.nome]) {
                 card.addEventListener('dblclick', () => {
-                    const nicknameTitleContainer = document.getElementById('nickname-title-container');
-                    const nicknamePerson = document.getElemen
+                    toggleNickname(card, data.nome);
+                });
+            }
+        });
+
+
+        // ----------------------------------------------------
+        // ROLAGEM SUAVE
+        // ----------------------------------------------------
+        
+        function scrollToSection(event, id) {
+            event.preventDefault();
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        document.getElementById('scroll-btn').addEventListener('click', (e) => {
+            scrollToSection(e, 'formandos-section');
+        });
+
+    </script>
+
+</body>
+</html>
